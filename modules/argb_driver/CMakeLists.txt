@@ -5,4 +5,6 @@ set(SRCS
 idf_component_register(
     SRCS ${SRCS}
     INCLUDE_DIRS "."
+    REQUIRES utils
+    PRIV_REQUIRES esp_driver_spi
 )

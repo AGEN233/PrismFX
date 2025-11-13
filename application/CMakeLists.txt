@@ -1,13 +1,24 @@
 # application/CMakeLists.txt
 
-set(srcs    "app_main.c"
-            "src/argb_drv.c"
-            "src/argb_drv_ws2812b.c"
+set(srcs
+    "app_main.c"
+    "src/argb_drv.c"
+    "src/argb_drv_ws2812b.c"
 )
 
-set(includes    "include"
-				".")
+set(includes
+    "include"
+    "."
+)
 
-idf_component_register(SRCS ${srcs}
-					   INCLUDE_DIRS ${includes}
-                       REQUIRES utils)
+
+set(requires
+    "utils"
+    "argb_driver"
+)
+
+idf_component_register(
+    SRCS ${srcs}
+    INCLUDE_DIRS ${includes}
+    REQUIRES ${requires}
+)

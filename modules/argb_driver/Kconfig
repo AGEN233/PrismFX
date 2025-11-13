@@ -1,0 +1,25 @@
+menu "Addressable RGB Driver Configuration"
+comment "Drive using hardware SPI with DMA"
+
+choice
+    prompt "ARGB CHIP TYPE"
+    default ARGB_TYPE_WS2812B
+    
+    config ARGB_TYPE_WS2812B
+        bool "WS2812B"
+    config ARGB_TYPE_SK6812
+        bool "SK6812"
+endchoice
+
+config ARGB_OUT_PIN
+    int "OUT_PIN"
+    default 18
+    range 0 39
+
+config ARGB_CAP_MAX
+    int "ARGB Capacity Maximum"
+    default 1024
+    help 
+        Set the maximum number of LEDs supported
+
+endmenu # Addressable RGB Configuration

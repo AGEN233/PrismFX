@@ -6,7 +6,7 @@
  */
 static void inline prismFX_light_drv_init(void)
 {
-    ws2812_spi_init();
+    ws2812b_spi_init();
 }
 
 /**

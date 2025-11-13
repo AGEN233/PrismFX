@@ -886,13 +886,17 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 
 #
-# Addressable RGB Configuration
+# Addressable RGB Driver Configuration
 #
-# default:
+
+#
+# Drive using hardware SPI with DMA
+#
 CONFIG_ARGB_TYPE_WS2812B=y
-# default:
 # CONFIG_ARGB_TYPE_SK6812 is not set
-# end of Addressable RGB Configuration
+# default:
+CONFIG_ARGB_OUT_PIN=18
+# end of Addressable RGB Driver Configuration
 # end of prismFX Project Configuration
 
 #
