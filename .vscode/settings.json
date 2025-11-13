@@ -3,5 +3,12 @@
         "activityBar.background": "#42252F",
         "titleBar.activeBackground": "#5D3342",
         "titleBar.activeForeground": "#FCF9FA"
+    },
+    "files.associations": {
+        "esp_system.h": "c",
+        "nvs_flash.h": "c",
+        "dev_public.h": "c",
+        "argb_drv.h": "c",
+        "ws2812.h": "c"
     }
 }
