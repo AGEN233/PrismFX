@@ -888,9 +888,7 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # Addressable RGB Configuration
 #
-# default:
 CONFIG_ARGB_TYPE_WS2812B=y
-# default:
 # CONFIG_ARGB_TYPE_SK6812 is not set
 # end of Addressable RGB Configuration
 # end of prismFX Project Configuration

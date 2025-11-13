@@ -1,0 +1,14 @@
+menu "Addressable RGB Driver Configuration"
+
+choice
+    prompt "ARGB CHIP TYPE"
+    default WS2812B
+
+    config ARGB_TYPE_WS2812B
+        bool "WS2812B"
+    config ARGB_TYPE_SK6812
+        bool "SK6812"
+endchoice
+
+
+endmenu # Addressable RGB Configuration
