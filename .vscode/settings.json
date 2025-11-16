@@ -9,6 +9,10 @@
         "nvs_flash.h": "c",
         "dev_public.h": "c",
         "argb_drv.h": "c",
-        "ws2812.h": "c"
+        "ws2812.h": "c",
+        "esp_app_desc.h": "c",
+        "log.h": "c",
+        "spi_master.h": "c",
+        "sdkconfig.h": "c"
     }
 }

@@ -1,9 +1,17 @@
-// #include "argb_drv.h"
-// #include "log.h"
+#ifdef CONFIG_ARGB_TYPE_SK6812
 
-// #define TAG "ws2812b"
+#include "argb_drv.h"
+#include "log.h"
 
-// void ws2812b_spi_init(void)
-// {
-//     LOGI(TAG, "spi init");
-// }
+#define TAG "SK8612"
+
+static void sk8612_spi_init(void)
+{
+    LOGI(TAG, "spi init");
+}
+
+void argb_driver_init(void)
+{
+
+}
+#endif

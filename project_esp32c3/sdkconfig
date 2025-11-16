@@ -892,13 +892,11 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # Drive using hardware SPI with DMA
 #
-# default:
-CONFIG_ARGB_TYPE_WS2812B=y
-# default:
+CONFIG_ARGB_TYPE_WS2812B_SPI=y
 # CONFIG_ARGB_TYPE_SK6812 is not set
 CONFIG_ARGB_OUT_PIN=18
 # default:
-CONFIG_ARGB_CAP_MAX=1024
+CONFIG_LED_COUNT_MAX=1024
 # end of Addressable RGB Driver Configuration
 # end of prismFX Project Configuration
 
@@ -1811,7 +1809,7 @@ CONFIG_ESP_IPC_TASK_STACK_SIZE=1024
 # end of IPC (Inter-Processor Call)
 
 #
-# ESP Timer (High Resolution Timer)
+# 
 #
 # default:
 CONFIG_ESP_TIMER_IN_IRAM=y
@@ -1837,7 +1835,7 @@ CONFIG_ESP_TIMER_ISR_AFFINITY_CPU0=y
 # CONFIG_ESP_TIMER_SUPPORTS_ISR_DISPATCH_METHOD is not set
 # default:
 CONFIG_ESP_TIMER_IMPL_SYSTIMER=y
-# end of ESP Timer (High Resolution Timer)
+# end of 
 
 #
 # ESP Trace Configuration

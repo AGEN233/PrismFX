@@ -2,8 +2,7 @@
 
 set(srcs
     "app_main.c"
-    "src/argb_drv.c"
-    "src/argb_drv_ws2812b.c"
+    "src/argb_core.c"
 )
 
 set(includes
@@ -11,8 +10,8 @@ set(includes
     "."
 )
 
-
 set(requires
+    "esp_app_format"
     "utils"
     "argb_driver"
 )
