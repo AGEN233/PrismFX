@@ -39,8 +39,8 @@ static void ws2812b_spi_init(void)
         LOGE(TAG, "spi device init error(%d)| %s", ret, esp_err_to_name(ret));
         return;
     }
-    memset(argb_spi_buf, 0, sizeof(argb_buf));
-    LOGI(TAG, "driver init success")
+    memset(argb_spi_buf, 0, sizeof(CONFIG_LED_COUNT_MAX));
+    LOGI(TAG, "driver init success");
 }
 
 void argb_driver_init(void)

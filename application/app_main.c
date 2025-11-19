@@ -10,7 +10,6 @@ static void prismFX_system_print_firmWare_info(void)
     LOGI(FW_T, "FirmWare ID: %02X", FIRMWARE_ID);
     LOGI(FW_T, "BuildTime: %s %s", fwinfo->date, fwinfo->time);
     LOGI(FW_T, "IDF Version  : %s", fwinfo->idf_ver);
-    LOGI(FW_T, "ELF SHA: %s", fwinfo->app_elf_sha256);
     #undef FW_T
 }
  

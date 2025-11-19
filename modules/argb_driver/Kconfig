@@ -1,8 +1,8 @@
 menu "Addressable RGB Driver Configuration"
 comment "Drive using hardware SPI with DMA"
 
-    choice
-        prompt "ARGB CHIP TYPE"
+    choice ARGB_TYPE
+        prompt "ARGB TYPE"
         default ARGB_TYPE_WS2812B_SPI
         
         config ARGB_TYPE_WS2812B_SPI
@@ -21,5 +21,4 @@ comment "Drive using hardware SPI with DMA"
         default 1024
         help 
             Set the maximum number of LEDs supported
-            
 endmenu
