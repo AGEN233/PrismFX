@@ -10,14 +10,20 @@ comment "Drive using hardware SPI with DMA"
         config ARGB_TYPE_SK6812
             bool "SK6812"
     endchoice
+    
+    config WS2812B_SPI_STACK_SIZE
+        int "WS2812B SPI Task Stack Size (bytes)"
+        default 1024
+        range 256 8192
+        depends on ARGB_TYPE_WS2812B_SPI
 
     config ARGB_OUT_PIN
-        int "OUT_PIN"
+        int "ARGB OUT_PIN"
         default 18
         range 0 39
 
     config LED_COUNT_MAX
-        int "LED_COUNT_MAX"
+        int "LED COUNT MAX"
         default 1024
         help 
             Set the maximum number of LEDs supported

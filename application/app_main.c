@@ -16,5 +16,5 @@ static void prismFX_system_print_firmWare_info(void)
 void prismFX_system_init(void)
 {
     prismFX_system_print_firmWare_info();
-    // prismFX_light_init();
+    prismFX_light_init();
 }

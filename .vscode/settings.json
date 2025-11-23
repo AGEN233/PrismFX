@@ -13,6 +13,12 @@
         "esp_app_desc.h": "c",
         "log.h": "c",
         "spi_master.h": "c",
-        "sdkconfig.h": "c"
+        "sdkconfig.h": "c",
+        "info_config.h": "c",
+        "dev_registry.h": "c",
+        "argb_core.h": "c",
+        "dev_register.h": "c",
+        "esp_attr.h": "c",
+        "string.h": "c"
     }
 }

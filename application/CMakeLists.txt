@@ -2,6 +2,7 @@
 
 set(srcs
     "app_main.c"
+    "src/dev_register.c"
     "src/argb_core.c"
 )
 
@@ -12,6 +13,7 @@ set(includes
 
 set(requires
     "esp_app_format"
+    "nvs_flash"
     "utils"
     "argb_driver"
 )
