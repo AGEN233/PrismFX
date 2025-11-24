@@ -18,5 +18,7 @@ void prismFX_system_init(void)
     prismFX_system_print_firmWare_info();
     prismFX_register_init();
     
+    led_pilot_init();
+
     prismFX_light_init();
 }

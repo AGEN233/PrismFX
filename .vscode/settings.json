@@ -26,6 +26,11 @@
         "algorithm": "c",
         "format": "c",
         "bitset": "c",
-        "task.h": "c"
+        "task.h": "c",
+        "freertos.h": "c",
+        "random": "c",
+        "cstdlib": "c",
+        "complex": "c",
+        "kconfig": "c"
     }
 }

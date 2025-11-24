@@ -6,8 +6,8 @@ menu "prismFX Project Configuration"
         default y
 
     config LED_PILOT_LAMP_OUT_PIN
-        int "LED Pilot lamp out pin"
-        default 4
+        int "LED Pilot Lamp OUT PIN"
+        default 3
         range 0 39
-        depends ENABLE_LED_PILOT_LAMP
+        depends on ENABLE_LED_PILOT_LAMP
 endmenu # prismFX Configuration

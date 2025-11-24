@@ -876,7 +876,8 @@ CONFIG_LED_COUNT_MAX=1024
 # end of Addressable RGB Driver Configuration
 
 # default:
-# CONFIG_ENABLE_LED_Pilot_lamp is not set
+CONFIG_ENABLE_LED_PILOT_LAMP=y
+CONFIG_LED_PILOT_LAMP_OUT_PIN=3
 # end of prismFX Project Configuration
 
 #
