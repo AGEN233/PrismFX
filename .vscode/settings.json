@@ -19,6 +19,13 @@
         "argb_core.h": "c",
         "dev_register.h": "c",
         "esp_attr.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "chrono": "c",
+        "span": "c",
+        "stdint.h": "c",
+        "algorithm": "c",
+        "format": "c",
+        "bitset": "c",
+        "task.h": "c"
     }
 }

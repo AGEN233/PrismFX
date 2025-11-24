@@ -38,8 +38,16 @@ typedef struct {
     uint8_t speed;
 } argb_dynamic_mode_st;
 
+/**
+ * @brief 开关
+ */
+typedef enum {
+    POWER_ON = 0x4F,
+    POWER_OFF = 0x46,
+}argb_powersw_type;
+
 typedef struct {
-    bool power_sw;
+    argb_powersw_type power_sw;
 
     argb_mode_type_et mode_type;
     uint8_t mode;
@@ -47,7 +55,6 @@ typedef struct {
     uint8_t brightness;
     argb_static_mode_st static_mode;
     argb_dynamic_mode_st dynamic_mode;
-
     
     uint16_t led_num;
 } argb_config_st;

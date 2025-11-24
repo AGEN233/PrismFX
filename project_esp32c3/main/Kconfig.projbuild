@@ -1,5 +1,13 @@
 menu "prismFX Project Configuration"
     source "../../modules/argb_driver/Kconfig"
     
-    
+    config ENABLE_LED_PILOT_LAMP
+        bool "ENABLE LED Pilot lamp"
+        default y
+
+    config LED_PILOT_LAMP_OUT_PIN
+        int "LED Pilot lamp out pin"
+        default 4
+        range 0 39
+        depends ENABLE_LED_PILOT_LAMP
 endmenu # prismFX Configuration

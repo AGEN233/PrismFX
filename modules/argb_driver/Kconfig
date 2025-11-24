@@ -15,12 +15,13 @@ comment "Drive using hardware SPI with DMA"
         int "WS2812B SPI Task Stack Size (bytes)"
         default 1024
         range 256 8192
-        depends on ARGB_TYPE_WS2812B_SPI
+        depends on ARGB_TYPE_WS2812B_SPI 
 
     config ARGB_OUT_PIN
         int "ARGB OUT_PIN"
-        default 18
+        default 2
         range 0 39
+        depends on (ARGB_TYPE_WS2812B_SPI || ARGB_TYPE_SK6812)
 
     config LED_COUNT_MAX
         int "LED COUNT MAX"

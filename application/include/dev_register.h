@@ -8,7 +8,6 @@
  * @brief 全局注册表
  */
 typedef struct {
-    // argb_config_st argb;
     // 掉电保存
     struct {
         argb_config_st argb;
@@ -21,4 +20,9 @@ typedef struct {
 } g_register_st;
 
 
+void prismFX_register_read(void);
+void prismFX_register_save(void);
+void prismFX_register_clean(void);
+g_register_st *prismFX_register_get_ptr(void);
+void prismFX_register_init(void);
 #endif

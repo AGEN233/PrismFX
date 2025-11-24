@@ -2,9 +2,11 @@
 #define __DEV_PUBLIC_H__
 
 #include "stdint.h"
+#include "string.h"
 
 #include "info_config.h"
 #include "log.h"
+#include "system_time_adapter.h"
 #include "dev_register.h"
 #include "argb_core.h"
 
