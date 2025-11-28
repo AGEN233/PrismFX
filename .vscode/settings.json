@@ -31,6 +31,7 @@
         "random": "c",
         "cstdlib": "c",
         "complex": "c",
-        "kconfig": "c"
+        "kconfig": "c",
+        "cstdint": "c"
     }
 }

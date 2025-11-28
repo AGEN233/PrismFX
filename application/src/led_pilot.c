@@ -15,7 +15,7 @@
 #define LEDC_RESOLUTION     LEDC_TIMER_8_BIT
 #define MAX_DUTY            255
 
-#define BREATHE_TIME_MS     2500
+#define BREATHE_TIME_MS     2000
 #define FAST_BLINK_MS       500
 #define SLOW_BLINK_MS       1000
 
@@ -25,6 +25,9 @@ static bool g_blink_state = false;
 static uint8_t g_breath_up = 1;
 static ledc_cbs_t g_ledc_fade_cb = {0};
 
+/**
+ * @brief 渐变定时器回调
+ */
 static bool IRAM_ATTR led_breath_mode_cb(const ledc_cb_param_t *param, void *arg)
 {
     if (g_led_mode != BREATH_MODE) return false;
@@ -35,6 +38,9 @@ static bool IRAM_ATTR led_breath_mode_cb(const ledc_cb_param_t *param, void *arg
     return false;
 }
 
+/**
+ * @brief 闪烁模式定时器回调
+ */
 static void led_blink_timer_callback(TimerHandle_t xTimer)
 {
     if (g_led_mode != FAST_BLINK_MODE && g_led_mode != SLOW_BLINK_MODE)
@@ -51,6 +57,10 @@ static void led_blink_timer_callback(TimerHandle_t xTimer)
     ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
 }
 
+/**
+ * @brief 设置指示灯模式
+ * @param led_pilot_mode_et mode
+ */
 void led_pilot_set_mode(led_pilot_mode_et mode)
 {
     if (mode == g_led_mode) return;
@@ -87,6 +97,9 @@ void led_pilot_set_mode(led_pilot_mode_et mode)
     }
 }
 
+/**
+ * @brief 指示灯初始化
+ */
 void led_pilot_init(void)
 {
     ledc_timer_config_t ledc_timer = {

@@ -11,3 +11,4 @@ menu "prismFX Project Configuration"
         range 0 39
         depends on ENABLE_LED_PILOT_LAMP
 endmenu # prismFX Configuration
+

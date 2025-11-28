@@ -4,4 +4,5 @@
 #include "stdint.h"
 void argb_drv_sendata(const uint8_t *color_data, uint16_t len);
 void argb_driver_init(void);
+
 #endif

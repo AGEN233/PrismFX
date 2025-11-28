@@ -13,5 +13,4 @@ idf_component_register(
     PRIV_REQUIRES esp_driver_spi
 )
 
-# 在源文件头插入头文件
 target_compile_options(${COMPONENT_LIB} PRIVATE "-include${CMAKE_BINARY_DIR}/config/sdkconfig.h")
