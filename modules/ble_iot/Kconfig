@@ -1,0 +1,15 @@
+
+config ENABLE_BLE_IOT
+    bool "Enable BLE IoT"
+    default y
+    help
+        Enable the BLE IoT functionality. All BLE IoT settings depend on this.
+if ENABLE_BLE_IOT && BT_NIMBLE_ENABLED
+    menu "BLE IoT Configuration"
+    endmenu
+endif
+if ENABLE_BLE_IOT && !BT_NIMBLE_ENABLED
+    comment ">>>>>>WARNING>>>>>>"
+    comment "BLE IoT requires NimBLE"
+    comment "PLEASE enable BlueTooth and use NimBLE"
+endif

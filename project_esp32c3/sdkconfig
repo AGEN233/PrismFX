@@ -859,6 +859,18 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # prismFX Project Configuration
 #
+# default:
+CONFIG_ENABLE_BLE_IOT=y
+
+#
+# BLE IoT Configuration
+#
+# default:
+CONFIG_BLE_DEVICE_NAME="DEFAULT"
+# default:
+CONFIG_BLE_TASK_STACK_SIZE=1024
+# end of BLE IoT Configuration
+
 CONFIG_ENABLE_ARGB=y
 
 #

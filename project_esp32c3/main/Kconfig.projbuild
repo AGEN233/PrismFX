@@ -1,4 +1,5 @@
 menu "prismFX Project Configuration"
+    source "../../modules/ble_iot/Kconfig"
     source "../../modules/argb_driver/Kconfig"
     
     config ENABLE_LED_PILOT_LAMP
