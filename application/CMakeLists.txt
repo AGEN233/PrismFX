@@ -20,6 +20,7 @@ set(requires
 
     "utils"
     "argb_driver"
+    "ble_iot"
 )
 
 idf_component_register(

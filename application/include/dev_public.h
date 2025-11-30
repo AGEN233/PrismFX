@@ -16,6 +16,7 @@
 #include "dev_register.h"
 #include "led_pilot.h"
 #include "argb_core.h"
+#include "ble_iot.h"
 
 void prismFX_system_init(void);
 #endif

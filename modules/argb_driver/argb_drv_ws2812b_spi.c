@@ -35,8 +35,8 @@ static const uint16_t ws2812b_half_lut_buf[16] = {
 
 static volatile bool ws2812b_sendata_flag = false;
 static bool ws2812b_init_done = false;
-static spi_device_handle_t spi_handle = NULL;              // SPIHandle
-static TaskHandle_t ws2812b_spi_drv_handle = NULL;        // TaskHandle
+static spi_device_handle_t spi_handle = NULL;               // SPIHandle
+static TaskHandle_t ws2812b_spi_drv_handle = NULL;          // TaskHandle
 
 /**
  * @brief 设置发送灯光数据
@@ -72,9 +72,9 @@ static inline void ws2812b_data_rgb_to_spi(const uint8_t *rgb_buf, uint8_t *spi_
             uint16_t spi_high = ws2812b_half_lut_buf[high];
             uint16_t spi_low = ws2812b_half_lut_buf[low];
 
-            spi_buf[spi_index++] =  (spi_high >> 8) & 0xFF;
+            spi_buf[spi_index++] = (spi_high >> 8) & 0xFF;
             spi_buf[spi_index++] = spi_high & 0xFF;
-            spi_buf[spi_index++] =  (spi_low >> 8) & 0xFF;
+            spi_buf[spi_index++] = (spi_low >> 8) & 0xFF;
             spi_buf[spi_index++] = spi_low & 0xFF;
         }
     }
@@ -137,20 +137,20 @@ static void ws2812b_spi_init(void)
         LOGE(TAG, "spi device init error(%d)| %s", ret, esp_err_to_name(ret));
         return;
     }
-            
+
     memset(ws2812b_spi_buf, 0, CONFIG_LED_COUNT_MAX * BYTES_PER_LED);
     memset(ws2812b_rgb_buf, 0, CONFIG_LED_COUNT_MAX * 3);
 
     if (ws2812b_spi_drv_handle == NULL) {
-         xTaskCreate(ws2812b_spi_drv_task, "ws2812b_spi_drv_task", CONFIG_WS2812B_SPI_STACK_SIZE, 
-            NULL, 5, &ws2812b_spi_drv_handle);
-            
+        xTaskCreate(ws2812b_spi_drv_task, "ws2812b_spi_drv_task", CONFIG_WS2812B_SPI_STACK_SIZE,
+                    NULL, 5, &ws2812b_spi_drv_handle);
+
         if (ws2812b_spi_drv_handle == NULL) {
             LOGI(TAG, "driver task create error\n");
             return;
         }
     }
-    
+
     ws2812b_init_done = true;
     LOGI(TAG, "driver init success");
 }

@@ -6,6 +6,8 @@ set(EXTRA_COMPONENT_DIRS
      $ENV{IDF_PATH}/../application/
      $ENV{IDF_PATH}/../modules/utils
      $ENV{IDF_PATH}/../modules/argb_driver
+     $ENV{IDF_PATH}/../modules/ble_iot
+     
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)

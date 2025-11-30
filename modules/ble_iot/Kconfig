@@ -4,10 +4,30 @@ config ENABLE_BLE_IOT
     default y
     help
         Enable the BLE IoT functionality. All BLE IoT settings depend on this.
+
 if ENABLE_BLE_IOT && BT_NIMBLE_ENABLED
     menu "BLE IoT Configuration"
+        config ENABLE_BLE_IOT_ADV
+            bool "ENABLE BLE Advertising"
+            default y
+        config BLE_IOT_ADV_ITVL_MIN_MS
+            depends on ENABLE_BLE_IOT_ADV
+            int "Advertising Interval Min (ms)"
+            default 80
+            range 20 10240
+            help
+                "Minimum advertising interval in milliseconds (20ms ~ 10240ms)"
+        config BLE_IOT_ADV_ITVL_MAX_MS
+            depends on ENABLE_BLE_IOT_ADV
+            int "dAdvertising Interval Max (ms)"
+            default 80
+            range 20 10240
+            help
+                "Maximum advertising interval in milliseconds (20ms ~ 10240ms)"
     endmenu
+
 endif
+
 if ENABLE_BLE_IOT && !BT_NIMBLE_ENABLED
     comment ">>>>>>WARNING>>>>>>"
     comment "BLE IoT requires NimBLE"

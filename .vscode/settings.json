@@ -32,6 +32,12 @@
         "cstdlib": "c",
         "complex": "c",
         "kconfig": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "ble_iot.h": "c",
+        "util.h": "c",
+        "ble_hs.h": "c",
+        "nimble_port.h": "c",
+        "ble_store.h": "c",
+        "led_pilot.h": "c"
     }
 }

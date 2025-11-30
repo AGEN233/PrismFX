@@ -2,7 +2,8 @@
 #define __INFO_CONFIG_H__
 
 
+#define DEVICE_TYPE         0x01
+#define DEVICE_NAME         "prismFX"
 #define FIRMWARE_VERSION    0x0001
-#define FIRMWARE_ID         0x00
 
 #endif
