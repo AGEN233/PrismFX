@@ -37,11 +37,11 @@ void ble_iot_get_mac_addr(uint8_t *mac)
     esp_read_mac(mac, ESP_MAC_BT);
 }
 /**
- * @brief 
+ * @brief
  */
 static void ble_iot_on_stack_reset_cb(int reason)
 {
-    
+
 }
 
 /**
@@ -51,11 +51,13 @@ static void ble_iot_on_stack_sync_cb(void)
 {
     /* On stack sync, do advertising initialization */
     LOGI(TAG, "Host Sync BleContorll success");
+    ble_iot_gap_init();
+    ble_iot_gatt_init();
     ble_iot_adv_init();
 }
 
 /**
- * @brief 
+ * @brief
  */
 static int ble_iot_on_stack_store_status_cb(struct ble_store_status_event *event, void *arg)
 {

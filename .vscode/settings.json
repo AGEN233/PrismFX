@@ -38,6 +38,9 @@
         "ble_hs.h": "c",
         "nimble_port.h": "c",
         "ble_store.h": "c",
-        "led_pilot.h": "c"
+        "led_pilot.h": "c",
+        "ble_gap.h": "c",
+        "ble.h": "c",
+        "ble_iot_internal.h": "c"
     }
 }

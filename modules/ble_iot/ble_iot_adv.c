@@ -9,7 +9,18 @@ static ble_iot_adv_data_t              g_ble_iot_adv_data;
 static struct ble_hs_adv_fields        ble_iot_adv_fields;
 static struct ble_gap_adv_params       ble_iot_adv_params;
 
-#define BLE_IOT_ADV_MAX_LEN     32
+#define BLE_IOT_ADV_MAX_LEN         31
+#define BLE_IOT_ADV_DEVICE_NAME_MAX 8
+#define BLE_IOT_ADV_DEVICE_MAC_LEN  6
+#define BLE_IOT_ADV_DEVICE_MAX      (BLE_IOT_ADV_DEVICE_NAME_MAX + BLE_IOT_ADV_DEVICE_MAC_LEN)
+
+/**
+ * @brief 转 MAC 后三字节为 ASCII HEX
+ */
+static void mac_to_ascii_suffix(uint8_t mac[6], char buf[6])
+{
+    snprintf(buf, 7, "%02X%02X%02X", mac[3], mac[4], mac[5]);
+}
 
 /**
  * @brief 蓝牙广播开始
@@ -22,7 +33,7 @@ void ble_iot_adv_start(void)
         return;
     }
 
-    ret = ble_gap_adv_start(ble_iot_get_mac_type(), NULL, BLE_HS_FOREVER, &ble_iot_adv_params, NULL, NULL);
+    ret = ble_gap_adv_start(ble_iot_get_mac_type(), NULL, BLE_HS_FOREVER, &ble_iot_adv_params, ble_iot_gap_event_cb, NULL);
 
     if (ret) {
         LOGE(TAG, "adv_start failed| %d", ret);
@@ -49,50 +60,43 @@ void ble_iot_adv_stop(void)
 void ble_iot_adv_update(const ble_iot_adv_data_t *adv_data)
 {
     if (!adv_data) return;
-
-    static uint8_t device_name_buf[31];
-    static uint8_t svc_data_buf[7];
-
     g_ble_iot_adv_data = *adv_data;
 
     ble_iot_adv_fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
 
-    uint8_t mac[6] = {0};
+    uint8_t mac[6];
     ble_iot_get_mac_addr(mac);
 
-    uint8_t max_name_len = sizeof(device_name_buf) - 1 - 8;
-    uint8_t name_len = adv_data->device_name_len;
-    if (name_len > max_name_len) name_len = max_name_len;
+    static char device_name[BLE_IOT_ADV_DEVICE_MAX];
+    uint8_t name_len = strlen((const char *)adv_data->device_name);
+    if (name_len > BLE_IOT_ADV_DEVICE_NAME_MAX) name_len = BLE_IOT_ADV_DEVICE_NAME_MAX;
 
-    memcpy(device_name_buf, adv_data->device_name, name_len);
-    device_name_buf[name_len] = '_';
-    for (int i = 0; i < 4; i++) {
-        uint8_t b = mac[2 + i];
-        device_name_buf[name_len + 1 + i * 2]     = (b >> 4) < 10 ? '0' + (b >> 4) : 'A' + (b >> 4) - 10;
-        device_name_buf[name_len + 1 + i * 2 + 1] = (b & 0x0F) < 10 ? '0' + (b & 0x0F) : 'A' + (b & 0x0F) - 10;
-    }
+    memcpy(device_name, adv_data->device_name, name_len);
+    mac_to_ascii_suffix(mac, &device_name[name_len]);
 
-    ble_iot_adv_fields.name = device_name_buf;
-    ble_iot_adv_fields.name_len = name_len + 1 + 8;
+    ble_iot_adv_fields.name = (const uint8_t *)device_name;
+    ble_iot_adv_fields.name_len = name_len + BLE_IOT_ADV_DEVICE_MAC_LEN;
     ble_iot_adv_fields.name_is_complete = 1;
 
-    svc_data_buf[0] = mac[5];
-    svc_data_buf[1] = (uint8_t)adv_data->dual_ic;
-    svc_data_buf[2] = adv_data->device_type;
-    svc_data_buf[3] = (adv_data->fw_version >> 8) & 0xFF;
-    svc_data_buf[4] = adv_data->fw_version & 0xFF;
-    svc_data_buf[5] = (adv_data->dual_ic) ? adv_data->ic2_device_type : 0xFF;
-    svc_data_buf[6] = (adv_data->dual_ic) ? adv_data->ic2_fw_version : 0xFF;
+    static uint8_t mfg_data[10] = {0};
+    mfg_data[0] = 0x41;
+    mfg_data[1] = 0x47;
 
-    ble_iot_adv_fields.uuids16 = NULL;
-    ble_iot_adv_fields.uuids16_is_complete = 0;
+    mfg_data[2] = adv_data->device_type;
+    mfg_data[3] = (adv_data->fw_version >> 8) & 0xFF;
+    mfg_data[4] = adv_data->fw_version & 0xFF;
+    mfg_data[5] = adv_data->device_type;
 
-    ble_iot_adv_fields.svc_data_uuid16 = svc_data_buf;
-    ble_iot_adv_fields.svc_data_uuid16_len = sizeof(svc_data_buf);
+    mfg_data[6] = adv_data->dual_ic;
+    mfg_data[7] = adv_data->dual_ic ? adv_data->ic2_device_type : 0xFF;
+    mfg_data[8] = adv_data->dual_ic ? ((adv_data->ic2_fw_version >> 8) & 0xFF) : 0xFF;
+    mfg_data[9] = adv_data->dual_ic ? (adv_data->ic2_fw_version & 0xFF) : 0xFF;
+
+    ble_iot_adv_fields.mfg_data = mfg_data;
+    ble_iot_adv_fields.mfg_data_len = sizeof(mfg_data);
+
+
 }
-
-
-
 
 /**
  * @brief 蓝牙广播初始化

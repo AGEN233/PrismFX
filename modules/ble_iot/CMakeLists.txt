@@ -1,5 +1,6 @@
 set(SRCS    "ble_iot.c"
             "ble_iot_adv.c"
+            "ble_iot_gap.c"
             "ble_iot_gatt.c"
             "ble_iot_notify.c"
     )
