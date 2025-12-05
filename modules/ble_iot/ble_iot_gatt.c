@@ -18,6 +18,7 @@ static int dummy_cb(uint16_t conn_handle, uint16_t attr_handle,
 {
     return 0;
 }
+
 /**
  * @brief GATT服务表
  */
@@ -30,7 +31,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
         {
             {
                 .uuid = &gatt_svr_chr_control_write.u,
-                .access_cb = dummy_cb,
+                .access_cb = ble_gatt_iot_rx_data_cb,
                 .flags = BLE_GATT_CHR_F_WRITE,
             }, {
                 .uuid = &gatt_svr_chr_control_read.u,
@@ -48,7 +49,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
         {
             {
                 .uuid = &gatt_svr_chr_ota_write.u,
-                .access_cb = dummy_cb,
+                .access_cb = ble_gatt_iot_rx_data_cb,
                 .flags = BLE_GATT_CHR_F_WRITE,
             }, {
                 .uuid = &gatt_svr_chr_ota_read.u,
@@ -61,24 +62,30 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {0}
 };
 
-
 /**
  * @brief GATT初始化
  */
 void ble_iot_gatt_init(void)
 {
+    ble_iot_gatt_data_queue_init();
+
     int ret;
     ret = ble_gatts_count_cfg(gatt_svr_svcs);
     if (ret != 0) {
         LOGE(TAG, "ble_gatts_count_cfg failed| %d", ret);
         return;
     }
-    
+
     ret = ble_gatts_add_svcs(gatt_svr_svcs);
     if (ret != 0) {
         LOGE(TAG, "ble_gatts_add_svcs failed| %d", ret);
         return;
     }
-    LOGI(TAG, "GATT init success");
+
+    ret = ble_gatts_start();
+    if (ret != 0) {
+        LOGE(TAG, "gatt start failed| %d", ret);
+        return;
+    }
 }
 #endif

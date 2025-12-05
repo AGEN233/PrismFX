@@ -5,8 +5,9 @@
 #include "log.h"
 #define TAG "BLE(IOT)ADV"
 
-static ble_iot_adv_data_t              g_ble_iot_adv_data;
+static ble_iot_adv_data_st              g_ble_iot_adv_data;
 static struct ble_hs_adv_fields        ble_iot_adv_fields;
+static struct ble_hs_adv_fields        ble_iot_scan_fields;
 static struct ble_gap_adv_params       ble_iot_adv_params;
 
 #define BLE_IOT_ADV_MAX_LEN         31
@@ -32,6 +33,11 @@ void ble_iot_adv_start(void)
         LOGE(TAG, "ble_gap_adv_set_fields failed| %d", ret);
         return;
     }
+    ret = ble_gap_adv_set_fields(&ble_iot_scan_fields);
+    if (ret) {
+        LOGE(TAG, "ble_gap_scanfadv_set_fields failed| %d", ret);
+        return;
+    }
 
     ret = ble_gap_adv_start(ble_iot_get_mac_type(), NULL, BLE_HS_FOREVER, &ble_iot_adv_params, ble_iot_gap_event_cb, NULL);
 
@@ -39,7 +45,6 @@ void ble_iot_adv_start(void)
         LOGE(TAG, "adv_start failed| %d", ret);
         return;
     }
-    LOGI(TAG, "ble adv start");
 }
 
 /**
@@ -57,7 +62,7 @@ void ble_iot_adv_stop(void)
 /**
  * @brief 更新蓝牙广播
  */
-void ble_iot_adv_update(const ble_iot_adv_data_t *adv_data)
+void ble_iot_adv_update(const ble_iot_adv_data_st *adv_data)
 {
     if (!adv_data) return;
     g_ble_iot_adv_data = *adv_data;
@@ -94,10 +99,8 @@ void ble_iot_adv_update(const ble_iot_adv_data_t *adv_data)
 
     ble_iot_adv_fields.mfg_data = mfg_data;
     ble_iot_adv_fields.mfg_data_len = sizeof(mfg_data);
-
-
+    
 }
-
 /**
  * @brief 蓝牙广播初始化
  */
@@ -105,6 +108,7 @@ void ble_iot_adv_init(void)
 {
     memset(&ble_iot_adv_fields, 0, sizeof(ble_iot_adv_fields));
     memset(&ble_iot_adv_params, 0, sizeof(ble_iot_adv_params));
+    memset(&ble_iot_scan_fields, 0, sizeof(ble_iot_scan_fields));
     memset(&g_ble_iot_adv_data, 0, sizeof(g_ble_iot_adv_data));
 
     ble_iot_adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
@@ -115,7 +119,7 @@ void ble_iot_adv_init(void)
     ble_iot_adv_params.filter_policy = 0;
     ble_iot_adv_params.high_duty_cycle = 0;
 
-    static ble_iot_adv_data_t adv_data = {
+    static ble_iot_adv_data_st adv_data = {
         .device_type = 0x01,
         .device_name = "prismFX",
         .device_name_len = 8,

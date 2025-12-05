@@ -14,6 +14,7 @@
 static TaskHandle_t ble_iot_host_handle = NULL;
 static uint8_t g_mac_type = 0;
 
+
 /**
  * @brief 获取mac类型
  * @return  #define BLE_ADDR_PUBLIC      (0x00)
@@ -54,6 +55,7 @@ static void ble_iot_on_stack_sync_cb(void)
     ble_iot_gap_init();
     ble_iot_gatt_init();
     ble_iot_adv_init();
+
 }
 
 /**
@@ -93,6 +95,7 @@ static void ble_iot_nimble_init(void)
     ble_hs_cfg.reset_cb = ble_iot_on_stack_reset_cb;
     ble_hs_cfg.sync_cb = ble_iot_on_stack_sync_cb;
     ble_hs_cfg.store_status_cb = ble_iot_on_stack_store_status_cb;
+
 
     /* Start NimBLE host task thread and return */
     if (ble_iot_host_handle == NULL) {

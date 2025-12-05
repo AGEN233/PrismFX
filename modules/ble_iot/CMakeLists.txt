@@ -3,6 +3,7 @@ set(SRCS    "ble_iot.c"
             "ble_iot_gap.c"
             "ble_iot_gatt.c"
             "ble_iot_notify.c"
+            "ble_iot_protocol.c"
     )
 
 idf_component_register(

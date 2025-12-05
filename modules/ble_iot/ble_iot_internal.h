@@ -6,8 +6,21 @@
 #include "host/ble_gap.h"
 #include "host/ble_hs.h"
 #include "log.h"
-
 #ifdef CONFIG_ENABLE_BLE_IOT
+
+// dataqueue
+typedef struct {
+    uint8_t ver;
+    uint8_t opcode;
+    uint16_t cmd;
+    uint8_t payload[256];
+    uint8_t payload_len;
+}ble_iot_data_queue_item_st;
+
+// protocol
+void ble_iot_gatt_data_queue_init(void);
+int ble_gatt_iot_rx_data_cb(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg);
+
 // gatt
 void ble_iot_gatt_init(void);
 
