@@ -5,6 +5,7 @@ set(srcs
     "src/dev_register.c"
     "src/argb_core.c"
     "src/led_pilot.c"
+    "src/dev_data_event.c"
 )
 
 set(includes

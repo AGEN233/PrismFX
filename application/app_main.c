@@ -12,12 +12,29 @@ static void prismFX_system_print_firmWare_info(void)
     LOGI(FW_T, "IDFVersion: %s\n", fwinfo->idf_ver);
     #undef FW_T
 }
- 
+
+static void prismFX_ble_iot_init(void)
+{
+    ble_iot_init();
+    
+    static ble_iot_adv_data_st adv_data = {
+        .device_type = 0x01,
+        .device_name = "prismFX",
+        .device_name_len = 8,
+        .fw_version = 0x01,
+        .dual_ic = false,
+    };
+    ble_iot_adv_update(&adv_data);
+    ble_iot_adv_start();
+
+    prismFX_data_register();
+}
+
 void prismFX_system_init(void)
 {
 
     prismFX_system_print_firmWare_info();
-    ble_iot_init();
+    prismFX_ble_iot_init();
     prismFX_register_init();
     
     

@@ -20,9 +20,9 @@ static void ble_iot_gap_connect_handle(struct ble_gap_event *event)
     int ret = ble_gap_conn_find(conn_handle, &conn_desc);
     if (ret == 0) {
         memcpy(mac_addr_master, conn_desc.peer_id_addr.val, sizeof(mac_addr_master));
-        LOGI(TAG, "device mac: %02X:%02X:%02X:%02X:%02X:%02X", mac_addr_master[5], mac_addr_master[4], mac_addr_master[3], mac_addr_master[2], mac_addr_master[1], mac_addr_master[0]);
+        LOGI(TAG, "master mac: %02X:%02X:%02X:%02X:%02X:%02X", mac_addr_master[5], mac_addr_master[4], mac_addr_master[3], mac_addr_master[2], mac_addr_master[1], mac_addr_master[0]);
     } else {
-        LOGW(TAG, "device mac get fail| %d", ret);
+        LOGW(TAG, "master mac get fail| %d", ret);
     }
 }
 

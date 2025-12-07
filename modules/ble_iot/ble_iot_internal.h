@@ -8,14 +8,7 @@
 #include "log.h"
 #ifdef CONFIG_ENABLE_BLE_IOT
 
-// dataqueue
-typedef struct {
-    uint8_t ver;
-    uint8_t opcode;
-    uint16_t cmd;
-    uint8_t payload[256];
-    uint8_t payload_len;
-}ble_iot_data_queue_item_st;
+
 
 // protocol
 void ble_iot_gatt_data_queue_init(void);

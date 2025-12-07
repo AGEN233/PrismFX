@@ -13,10 +13,13 @@
 #include "info_config.h"
 #include "log.h"
 #include "system_time_adapter.h"
+#include "ble_iot.h"
+
 #include "dev_register.h"
 #include "led_pilot.h"
 #include "argb_core.h"
-#include "ble_iot.h"
+#include "dev_data_event.h"
+
 
 void prismFX_system_init(void);
 #endif
