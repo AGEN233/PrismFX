@@ -5,7 +5,7 @@
 #include "dev_public.h"
 #include "driver/ledc.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/timers.h"
+#include "freertos/task.h"
 #include "driver/gpio.h"
 
 #define LEDC_CHANNEL        LEDC_CHANNEL_0
@@ -20,81 +20,59 @@
 #define SLOW_BLINK_MS       1000
 
 static led_pilot_mode_et g_led_mode = OFF_MODE;
-static TimerHandle_t g_blink_timer = NULL;
 static bool g_blink_state = false;
 static uint8_t g_breath_up = 1;
-static ledc_cbs_t g_ledc_fade_cb = {0};
+
+static TaskHandle_t g_led_task_handle = NULL;
 
 /**
- * @brief 渐变定时器回调
+ * @brief LED 控制任务
  */
-static bool IRAM_ATTR led_breath_mode_cb(const ledc_cb_param_t *param, void *arg)
+static void led_task(void *arg)
 {
-    if (g_led_mode != BREATH_MODE) return false;
-    uint32_t next = g_breath_up ? MAX_DUTY : 0;
-    g_breath_up = !g_breath_up;
-    ledc_set_fade_with_time(LEDC_MODE, LEDC_CHANNEL, next, BREATHE_TIME_MS);
-    ledc_fade_start(LEDC_MODE, LEDC_CHANNEL, LEDC_FADE_NO_WAIT);
-    return false;
-}
+    while (1) {
+        switch (g_led_mode) {
+            case OFF_MODE:
+                gpio_set_level(CONFIG_LED_PILOT_LAMP_OUT_PIN, 0);
+                ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+                vTaskDelay(pdMS_TO_TICKS(100));
+                break;
 
-/**
- * @brief 闪烁模式定时器回调
- */
-static void led_blink_timer_callback(TimerHandle_t xTimer)
-{
-    if (g_led_mode != FAST_BLINK_MODE && g_led_mode != SLOW_BLINK_MODE)
-        return;
+            case BREATH_MODE: {
+                uint32_t next = g_breath_up ? MAX_DUTY : 0;
+                g_breath_up = !g_breath_up;
+                ledc_set_fade_with_time(LEDC_MODE, LEDC_CHANNEL, next, BREATHE_TIME_MS);
+                ledc_fade_start(LEDC_MODE, LEDC_CHANNEL, LEDC_FADE_NO_WAIT);
+                vTaskDelay(pdMS_TO_TICKS(BREATHE_TIME_MS)); // 等待一次渐变完成
+                break;
+            }
 
-    g_blink_state = !g_blink_state;
-
-    if (g_blink_state) {
-        ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, MAX_DUTY);
-    } else {
-        gpio_set_level(CONFIG_LED_PILOT_LAMP_OUT_PIN, 0); // 直接拉低GPIO
-        ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
+            case FAST_BLINK_MODE:
+            case SLOW_BLINK_MODE: {
+                uint32_t delay_ms = (g_led_mode == FAST_BLINK_MODE) ? FAST_BLINK_MS : SLOW_BLINK_MS;
+                g_blink_state = !g_blink_state;
+                if (g_blink_state) {
+                    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, MAX_DUTY);
+                } else {
+                    gpio_set_level(CONFIG_LED_PILOT_LAMP_OUT_PIN, 0);
+                    ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
+                }
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+                vTaskDelay(pdMS_TO_TICKS(delay_ms / 2));
+                break;
+            }
+        }
     }
-    ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
 }
 
 /**
  * @brief 设置指示灯模式
- * @param led_pilot_mode_et mode
  */
 void led_pilot_set_mode(led_pilot_mode_et mode)
 {
     if (mode == g_led_mode) return;
     g_led_mode = mode;
-    if (g_blink_timer) xTimerStop(g_blink_timer, 0);
-
-    switch (mode) {
-        case OFF_MODE:
-            gpio_set_level(CONFIG_LED_PILOT_LAMP_OUT_PIN, 0);
-            ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
-            ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-            break;
-        case BREATH_MODE:
-            g_breath_up = 1;
-            ledc_set_fade_with_time(LEDC_MODE, LEDC_CHANNEL, MAX_DUTY, BREATHE_TIME_MS);
-            ledc_fade_start(LEDC_MODE, LEDC_CHANNEL, LEDC_FADE_NO_WAIT);
-            break;
-        case FAST_BLINK_MODE:
-            g_blink_state = false;
-            gpio_set_level(CONFIG_LED_PILOT_LAMP_OUT_PIN, 0);
-            ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
-            ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-            xTimerChangePeriod(g_blink_timer, pdMS_TO_TICKS(FAST_BLINK_MS / 2), 0);
-            xTimerStart(g_blink_timer, 0);
-            break;
-        case SLOW_BLINK_MODE:
-            g_blink_state = false;
-            gpio_set_level(CONFIG_LED_PILOT_LAMP_OUT_PIN, 0);
-            ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
-            ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-            xTimerChangePeriod(g_blink_timer, pdMS_TO_TICKS(SLOW_BLINK_MS / 2), 0);
-            xTimerStart(g_blink_timer, 0);
-            break;
-    }
 }
 
 /**
@@ -102,7 +80,7 @@ void led_pilot_set_mode(led_pilot_mode_et mode)
  */
 void led_pilot_init(void)
 {
-    ledc_timer_config_t ledc_timer = {
+    static const ledc_timer_config_t ledc_timer = {
         .speed_mode       = LEDC_MODE,
         .duty_resolution  = LEDC_RESOLUTION,
         .timer_num        = LEDC_TIMER,
@@ -111,7 +89,7 @@ void led_pilot_init(void)
     };
     if (ledc_timer_config(&ledc_timer) != ESP_OK) return;
 
-    ledc_channel_config_t ledc_channel_cfg = {
+    static const ledc_channel_config_t ledc_channel_cfg = {
         .speed_mode     = LEDC_MODE,
         .channel        = LEDC_CHANNEL,
         .timer_sel      = LEDC_TIMER,
@@ -126,11 +104,9 @@ void led_pilot_init(void)
 
     if (ledc_fade_func_install(0) != ESP_OK) return;
 
-    g_ledc_fade_cb.fade_cb = led_breath_mode_cb;
-    if (ledc_cb_register(LEDC_MODE, LEDC_CHANNEL, &g_ledc_fade_cb, NULL) != ESP_OK) return;
-
-    if (g_blink_timer == NULL)
-        g_blink_timer = xTimerCreate("led_blink", pdMS_TO_TICKS(FAST_BLINK_MS / 2), pdTRUE, NULL, led_blink_timer_callback);
+    if (g_led_task_handle == NULL) {
+        xTaskCreate(led_task, "pilot", 512, NULL, 5, &g_led_task_handle);
+    }
 
     led_pilot_set_mode(BREATH_MODE);
 }

@@ -55,7 +55,6 @@ static void ble_iot_on_stack_sync_cb(void)
     ble_iot_gap_init();
     ble_iot_gatt_init();
     ble_iot_adv_init();
-
 }
 
 /**

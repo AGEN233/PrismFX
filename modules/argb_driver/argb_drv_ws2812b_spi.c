@@ -1,7 +1,6 @@
 #ifdef CONFIG_ARGB_TYPE_WS2812B_SPI
 #include "argb_drv.h"
-#include "string.h"
-#include "log.h"
+
 #include "esp_attr.h"
 #include "driver/spi_master.h"
 #define TAG "WS2812B(SPI)"
@@ -46,7 +45,7 @@ static TaskHandle_t ws2812b_spi_drv_handle = NULL;          // TaskHandle
 void argb_drv_sendata(const uint8_t *color_data, uint16_t len)
 {
     if (len > CONFIG_LED_COUNT_MAX) len = CONFIG_LED_COUNT_MAX;
-    memcpy(ws2812b_rgb_buf, color_data, len);
+    memcpy(ws2812b_rgb_buf, color_data, (len * 3));
 }
 
 /**
@@ -113,7 +112,7 @@ static void ws2812b_spi_drv_task(void *arg)
 static void ws2812b_spi_init(void)
 {
     esp_err_t ret;
-    spi_bus_config_t buscfg = {
+    const static spi_bus_config_t buscfg = {
         .mosi_io_num = CONFIG_ARGB_OUT_PIN,
         .sclk_io_num = -1,
         .quadwp_io_num = -1,
@@ -126,7 +125,7 @@ static void ws2812b_spi_init(void)
         return;
     }
 
-    spi_device_interface_config_t devcfg = {
+    const static spi_device_interface_config_t devcfg = {
         .clock_speed_hz = 2500000, // 2.5M 波特率
         .mode = 0,
         .spics_io_num = -1,

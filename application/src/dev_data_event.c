@@ -3,17 +3,15 @@
 #include "ble_iot.h"
 
 #define TAG "DataEvent"
-static ble_iot_app_data_cb_t g_app_data_cb;
-
 /**
  * @brief 灯光数据解析
  * @param item
  */
 static void prismFX_ble_lcdata_press(ble_iot_data_queue_item_st *item)
 {
-    uint16_t attr = item->cmd;
-    uint16_t data_len = item->payload_len - 2; // 减cmd
-    uint8_t  *data = item->payload + 2;
+    // uint16_t attr = item->cmd;
+    // uint16_t data_len = item->payload_len - 2; // 减cmd
+    // uint8_t  *data = item->payload + 2;
 }
 
 /**
@@ -26,8 +24,7 @@ void prismFX_ble_data_cb(ble_iot_data_queue_item_st *item)
         printf("%02X ", item->payload[i]);
     }
     printf("\n");
-
-
+    
     if (item->opcode == 0x00) {
         prismFX_ble_lcdata_press(item);
     }

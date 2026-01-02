@@ -25,16 +25,27 @@ typedef struct {
     uint16_t payload_len;
 } ble_iot_data_queue_item_st;
 
+typedef struct {
+    uint8_t payload[256];
+    uint16_t payload_len;
+} ble_send_queue_packet_st;
+
+// callback
+typedef void (*ble_iot_app_data_cb_t)(ble_iot_data_queue_item_st *item);
+
+// protocol
+void ble_iot_sendata(uint8_t opcode, uint8_t *data, uint16_t len);
+void ble_iot_register_data_callback(ble_iot_app_data_cb_t cb);
+
 // ble adv
 void ble_iot_adv_start(void);
 void ble_iot_adv_stop(void);
 void ble_iot_adv_update(const ble_iot_adv_data_st *adv_data);
 
 // ble gatt
-typedef void (*ble_iot_app_data_cb_t)(ble_iot_data_queue_item_st *item);
-void ble_iot_register_data_callback(ble_iot_app_data_cb_t cb);
 
 // ble gap
+uint16_t ble_iot_gap_get_mtu(void);
 bool ble_iot_get_connect_status(void);
 
 // ble nimble stack
