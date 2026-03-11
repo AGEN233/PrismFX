@@ -19,6 +19,10 @@ typedef struct {
     } power_off_nosave;
 } g_register_st;
 
+typedef enum {
+    SAVE_PREVIEW,
+    DISCARD_PREVIEW
+}register_preview_exit_et;
 
 void prismFX_register_read(void);
 void prismFX_register_save(void);

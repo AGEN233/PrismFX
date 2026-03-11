@@ -141,7 +141,7 @@ static void ws2812b_spi_init(void)
     memset(ws2812b_rgb_buf, 0, CONFIG_LED_COUNT_MAX * 3);
 
     if (ws2812b_spi_drv_handle == NULL) {
-        xTaskCreate(ws2812b_spi_drv_task, "ws2812b_spi_drv_task", CONFIG_WS2812B_SPI_STACK_SIZE,
+        xTaskCreate(ws2812b_spi_drv_task, "ws2812b_spi_drv_task", CONFIG_WS2812B_STACK_SIZE,
                     NULL, 5, &ws2812b_spi_drv_handle);
 
         if (ws2812b_spi_drv_handle == NULL) {

@@ -1,15 +1,5 @@
 menu "prismFX Project Configuration"
     source "../../modules/ble_iot/Kconfig"
     source "../../modules/argb_driver/Kconfig"
-    
-    config ENABLE_LED_PILOT_LAMP
-        bool "ENABLE LED Pilot lamp"
-        default y
-
-    config LED_PILOT_LAMP_OUT_PIN
-        int "LED Pilot Lamp OUT PIN"
-        default 3
-        range 0 39
-        depends on ENABLE_LED_PILOT_LAMP
 endmenu # prismFX Configuration
 
