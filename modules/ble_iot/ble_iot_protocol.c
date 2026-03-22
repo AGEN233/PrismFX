@@ -161,7 +161,7 @@ uint8_t ble_iot_data_protocol_parser(uint8_t *data, uint16_t len)
         return BLE_ATT_ERR_INVALID_PDU;
     }
 
-    if (payload_len > 2) {
+    if (payload_len >= 2) {
 
         memset(&item, 0, sizeof(item));
 
@@ -172,7 +172,6 @@ uint8_t ble_iot_data_protocol_parser(uint8_t *data, uint16_t len)
 
         item.payload_len = payload_len - 2; // 去掉CMD
         memcpy(item.payload, &data[index], item.payload_len);
-         
         if (xQueueSend(g_rx_queue, &item, portMAX_DELAY) != pdPASS) {
             // 推送到队列
             LOGE(TAG, "Failed to send received data to RX queue");

@@ -12,6 +12,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "log.h"
+
+#include "sys/time.h"
+#include "time.h"
 #ifdef CONFIG_ENABLE_BLE_IOT
 
 // app_handle

@@ -5,7 +5,7 @@
 #define VER_MINOR   0
 #define VER_PATCH   0
 
-#define DEVICE_TYPE         0x01
+#define DEVICE_TYPE         0x0A
 #define DEVICE_NAME         "prismFX"
 #define FIRMWARE_VERSION    0x0001
 

@@ -1,5 +1,13 @@
 menu "prismFX Project Configuration"
+
+    config DEFAULT_LED_NUM
+        int "Default LED NUMBER"
+        default 200
+        range 1 1024
+        help
+            Default number of LED pixels for prismFX device.
+
     source "../../modules/ble_iot/Kconfig"
     source "../../modules/argb_driver/Kconfig"
-endmenu # prismFX Configuration
 
+endmenu # prismFX Project Configuration

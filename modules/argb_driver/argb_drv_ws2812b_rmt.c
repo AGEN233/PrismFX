@@ -5,12 +5,13 @@
 #define TAG "WS2812B(RMT)"
 
 #define WS2812B_RMT_HZ 10000000
-static uint8_t ws2812b_rgb_buf[CONFIG_LED_COUNT_MAX * 3];
+static uint8_t ws2812b_rgb_buf[CONFIG_LED_COUNT_MAX * 3] = {0};
 static SemaphoreHandle_t ws2812b_rmt_tx_done_sem;
 static TaskHandle_t ws2812b_rmt_drv_task_handle = NULL;          // TaskHandle
 static rmt_channel_handle_t led_chan = NULL;
 static rmt_encoder_handle_t simple_encoder = NULL;
 static rmt_tx_channel_config_t tx_chan_config;
+static uint16_t led_num = 0;
 
 rmt_transmit_config_t tx_config = {
     // no transfer loop
@@ -38,6 +39,32 @@ static const  rmt_symbol_word_t ws2812b_reset = {
     .level1 = 0
 };
 
+/**
+ * @brief 设置LED点数
+ */
+void argb_drv_set_led_len(uint16_t len)
+{
+    if (len == 0 || len > CONFIG_LED_COUNT_MAX) {
+        LOGE(TAG, "LED LEN ERROR, USE DEFAULT %d| current: %d", CONFIG_DEFAULT_LED_NUM, len);
+        led_num = CONFIG_DEFAULT_LED_NUM;
+    }else {
+        led_num = len;
+    }
+    
+}
+
+/**
+ * @brief 复制buf到发送线程
+ */
+void argb_drv_sendata(const uint8_t *color_data, uint16_t len)
+{
+    if (len > CONFIG_LED_COUNT_MAX) len = CONFIG_LED_COUNT_MAX;
+    memcpy(ws2812b_rgb_buf, color_data, (len * 3));
+}
+
+/**
+ * @brief RMT编码回调
+ */
 static size_t encoder_callback(const void *data, size_t data_size, size_t symbols_written,  size_t symbols_free, rmt_symbol_word_t *symbols, bool *done, void *arg)
 {
     // We need a minimum of 8 symbol spaces to encode a byte. We only
@@ -73,6 +100,9 @@ static size_t encoder_callback(const void *data, size_t data_size, size_t symbol
     }
 }
 
+/**
+ * @brief RMT TXDONE
+ */
 static bool rmt_tx_done_callback(rmt_channel_handle_t channel, const rmt_tx_done_event_data_t *edata, void *user_ctx)
 {
     BaseType_t high_task_wakeup = pdFALSE;
@@ -82,20 +112,20 @@ static bool rmt_tx_done_callback(rmt_channel_handle_t channel, const rmt_tx_done
     return high_task_wakeup == pdTRUE;
 }
 
-void argb_drv_sendata(const uint8_t *color_data, uint16_t len)
-{
-    if (len > CONFIG_LED_COUNT_MAX) len = CONFIG_LED_COUNT_MAX;
-    memcpy(ws2812b_rgb_buf, color_data, (len * 3));
-}
-
+/**
+ * @brief RMT发送线程
+ */
 static void ws2812b_rmt_drv_task(void *arg)
 {
     while (1) {
-        ESP_ERROR_CHECK(rmt_transmit(led_chan, simple_encoder, ws2812b_rgb_buf, 9, &tx_config));
+        ESP_ERROR_CHECK(rmt_transmit(led_chan, simple_encoder, ws2812b_rgb_buf, (led_num * 3), &tx_config));
         xSemaphoreTake(ws2812b_rmt_tx_done_sem, portMAX_DELAY);
     }
 }
 
+/**
+ * @brief RMT初始化
+ */
 static void ws2812b_rmt_init(void)
 {
     tx_chan_config.clk_src = RMT_CLK_SRC_DEFAULT; // select source clock
@@ -124,6 +154,7 @@ static void ws2812b_rmt_init(void)
     BaseType_t ret = xTaskCreate(ws2812b_rmt_drv_task, "ws2812b_spi_drv_task", CONFIG_WS2812B_STACK_SIZE, NULL, 5, &ws2812b_rmt_drv_task_handle);
     assert(ret == pdPASS);
 }
+
 /**
  * @brief 驱动初始化
  */

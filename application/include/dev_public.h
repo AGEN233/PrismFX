@@ -5,6 +5,7 @@
 
 #include "stdint.h"
 #include "string.h"
+#include "math.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -15,10 +16,15 @@
 #include "system_time_adapter.h"
 #include "ble_iot.h"
 
-#include "dev_register.h"
-#include "led_pilot.h"
 #include "argb_core.h"
+#include "argb_frame.h"
+#include "argb_colorful_if.h"
+
+#include "led_pilot.h"
+
 #include "dev_data_event.h"
+#include "dev_register.h"
+#include "dev_utils.h"
 
 
 void prismFX_system_init(void);
