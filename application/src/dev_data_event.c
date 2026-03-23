@@ -39,8 +39,9 @@ static void EF02_data_handle(const uint8_t *data, uint8_t len)
         .H = h,
         .S = s
     },
-    &argb_get_static_config()->color
+    &argb_get_static_config()->color[0]
     );
+    argb_get_static_config()->color_num = 1;
 
     argb_set_mode_type(STATIC_MODE);
     if (mode != current_mode) {
@@ -109,6 +110,76 @@ void prismFX_ble_data_cb(ble_iot_data_queue_item_st *item)
         default:
             break;
     }
+}
+
+void prismFX_state_report(void)
+{
+    extern ble_iot_adv_data_st device_info;
+
+    uint8_t buf[49] = {0};
+
+    buf[0] = 0xFF;
+    buf[1] = 0xFF;
+
+    buf[2] = device_info.device_type;
+    buf[3] = device_info.fw_version >> 8;
+    buf[4] = device_info.fw_version & 0xFF;
+
+    buf[5] = device_info.dual_ic;
+    buf[6] = device_info.ic2_device_type;
+    buf[7] = device_info.ic2_fw_version >> 8;
+    buf[8] = device_info.ic2_fw_version & 0xFF;
+
+    buf[9]  = CONFIG_LED_COUNT_MAX >> 8;
+    buf[10] = CONFIG_LED_COUNT_MAX & 0xFF;
+
+    buf[11] = argb_get_led_total_len() >> 8;
+    buf[12] = argb_get_led_total_len() & 0xFF;
+
+    buf[13] = 0; // 排序类型，再说
+    buf[14] = argb_get_power();
+    buf[15] = argb_get_unif_br();
+    buf[16] = 0; // 速度，再说
+    buf[17] = argb_get_mode_type();
+    buf[18] = argb_get_mode();
+
+    buf[19] = 0; // 模式可配置选项1，再说
+    buf[20] = 0; // 模式可配置选项2，再说
+    buf[21] = 0; // 模式可配置选项3，再说
+    buf[22] = 0; // 下拉选项，再说
+
+
+    const argb_color_type_st *color_ptr = NULL;
+    uint8_t color_num = 0;
+
+    if (argb_get_mode_type() == STATIC_MODE) {
+
+        const argb_static_mode_st *cfg = argb_get_static_config();
+
+        color_ptr = cfg->color;
+        color_num = cfg->color_num;
+
+    } else if (argb_get_mode_type() == DYNAMIC_MODE) {
+
+    }
+
+
+    if (color_num > 8)
+        color_num = 8;
+
+    buf[23] = color_num;
+    argb_color_HStype_st hs;
+
+    for (uint8_t i = 0; i < color_num; i++) {
+
+        rgb_to_hs_convert(&color_ptr[i], &hs);
+
+        buf[24 + i * 3] = hs.H >> 8;
+        buf[25 + i * 3] = hs.H & 0xFF;
+        buf[26 + i * 3] = hs.S;
+    }
+
+    ble_iot_sendata(0x00, buf, 49);
 }
 
 /**

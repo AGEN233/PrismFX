@@ -3,10 +3,12 @@
 
 #define TAG "ARGB(CORE)"
 
-extern argb_mode_loop_ptr_t static_mode_get_loop(uint8_t mode);
 // extern argb_mode_loop_ptr_t dynamic_mode_get_loop(uint8_t mode);
 static argb_mode_loop_ptr_t g_mode_loop = NULL;
 
+/**
+ * @brief 更新设置模式
+ */
 static void argb_get_mode_update(void)
 {
     uint8_t mode = argb_get_mode();
@@ -26,6 +28,10 @@ static void argb_get_mode_update(void)
     }
 }
 
+/**
+ * @brief 灯光循环处理loop
+ * @param arg
+ */
 static void argb_main_loop(void *arg)
 {
     bool power_last = !argb_get_power();
@@ -61,6 +67,9 @@ static void argb_main_loop(void *arg)
     }
 }
 
+/**
+ * @brief 灯光初始化
+ */
 void prismFX_light_init(void)
 {
     g_register_st *reg = prismFX_register_get_ptr();

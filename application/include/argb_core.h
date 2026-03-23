@@ -32,7 +32,8 @@ typedef enum {
  * @brief 静态模式
  */
 typedef struct {
-    argb_color_type_st color;
+    uint8_t color_num;
+    argb_color_type_st color[8];
 } argb_static_mode_st;
 
 /**

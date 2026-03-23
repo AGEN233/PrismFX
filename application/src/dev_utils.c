@@ -17,6 +17,11 @@ uint32_t util_math_map(uint32_t src, uint32_t in_min, uint32_t in_max, uint32_t 
     return (src - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+/**
+ * @brief HS转RGB
+ * @param hs
+ * @param rgb
+ */
 void hs_to_rgb_convert(const argb_color_HStype_st *hs, argb_color_type_st *rgb)
 {
     float hf = (float)hs->H;
@@ -51,4 +56,52 @@ void hs_to_rgb_convert(const argb_color_HStype_st *hs, argb_color_type_st *rgb)
     rgb->R = (uint8_t)((rf + m) * 255.0f);
     rgb->G = (uint8_t)((gf + m) * 255.0f);
     rgb->B = (uint8_t)((bf + m) * 255.0f);
+}
+
+/**
+ * @brief RGB转HS
+ * @param rgb
+ * @param hs
+ */
+void rgb_to_hs_convert(const argb_color_type_st *rgb, argb_color_HStype_st *hs)
+{
+    uint8_t max = rgb->R;
+    if (rgb->G > max) max = rgb->G;
+    if (rgb->B > max) max = rgb->B;
+
+    uint8_t min = rgb->R;
+    if (rgb->G < min) min = rgb->G;
+    if (rgb->B < min) min = rgb->B;
+
+    uint8_t delta = max - min;
+
+    uint16_t H = 0;
+
+    if (delta != 0) {
+
+        if (max == rgb->R) {
+
+            H = 60 * (int16_t)(rgb->G - rgb->B) / delta;
+
+        } else if (max == rgb->G) {
+
+            H = 120 + 60 * (int16_t)(rgb->B - rgb->R) / delta;
+
+        } else {
+
+            H = 240 + 60 * (int16_t)(rgb->R - rgb->G) / delta;
+        }
+
+        if ((int16_t)H < 0)
+            H += 360;
+    }
+
+    uint8_t S = 0;
+
+    if (max != 0) {
+        S = (uint16_t)delta * 100 / max;
+    }
+
+    hs->H = H;
+    hs->S = S;
 }

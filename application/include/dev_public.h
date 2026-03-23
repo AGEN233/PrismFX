@@ -20,6 +20,7 @@
 #include "argb_frame.h"
 #include "argb_colorful_if.h"
 
+#include "static_mode/static_mode.h"
 #include "led_pilot.h"
 
 #include "dev_data_event.h"

@@ -3,6 +3,7 @@
 
 bool g_argb_mode_refresh_flag = false;
 
+
 argb_mode_type_et argb_get_mode_type(void)
 {
     return prismFX_register_get_ptr()->power_off_save.argb.mode_type;

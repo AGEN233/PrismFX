@@ -1,10 +1,13 @@
 #include "dev_public.h"
 #include "argb_drv.h"
 
-static argb_color_type_st g_argb_color_payload[CONFIG_LED_COUNT_MAX] = {0};
+static argb_color_type_st argb_color_payload_buf[CONFIG_LED_COUNT_MAX] = {0};
 static argb_color_type_st argb_color_payload_tx_buf[CONFIG_LED_COUNT_MAX] = {0};
 static argb_frame_br_fade_config_st g_argb_br_fade_config = {0};
 
+/**
+ * @brief 伽马2.2表
+ */
 static const uint8_t gamma_lut[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5,
@@ -24,6 +27,10 @@ static const uint8_t gamma_lut[256] = {
     229, 231, 234, 236, 238, 240, 242, 244, 246, 248, 251, 253, 255
 };
 
+/**
+ * @brief 伽马转换处理
+ * @param payload
+ */
 static void inline argb_gamma_handle(argb_color_type_st *payload)
 {
     payload->R = gamma_lut[payload->R];
@@ -31,6 +38,9 @@ static void inline argb_gamma_handle(argb_color_type_st *payload)
     payload->B = gamma_lut[payload->B];
 }
 
+/**
+ * @brief RGB排序处理
+ */
 static void inline argb_led_short_handle(argb_color_type_st *src, argb_color_type_st *dst)
 {
     dst->R = src->G;
@@ -38,12 +48,19 @@ static void inline argb_led_short_handle(argb_color_type_st *src, argb_color_typ
     dst->B = src->B;
 }
 
+/**
+ * @brief 获取亮度渐变配置结构体
+ * @return argb_frame_br_fade_config_st*
+ */
 argb_frame_br_fade_config_st *argb_led_get_br_fade_config(void)
 {
     return &g_argb_br_fade_config;
 }
 
-// k = (1 - cos(pi * 已渐变时间 / 渐变时间长度)) /2
+/**
+ * @brief 亮度渐变处理
+ * @note 余弦变换: k = (1 - cos(pi * 已渐变时间 / 渐变时间长度)) /2
+ */
 void argb_led_br_fade_handle(void)
 {
     if (!g_argb_br_fade_config.active) {
@@ -66,6 +83,11 @@ void argb_led_br_fade_handle(void)
     g_argb_br_fade_config.current_br = g_argb_br_fade_config.start_br + diff * k;
 }
 
+/**
+ * @brief 开始亮度渐变
+ * @param target_br     目标亮度
+ * @param fade_time_ms  总渐变时间
+ */
 void argb_led_br_fade_start(uint8_t target_br, uint16_t fade_time_ms)
 {
     g_argb_br_fade_config.start_br = g_argb_br_fade_config.current_br;
@@ -75,29 +97,39 @@ void argb_led_br_fade_start(uint8_t target_br, uint16_t fade_time_ms)
     g_argb_br_fade_config.active = true;
 }
 
+/**
+ * @brief 发送灯光数据给驱动
+ */
 void argb_send_all(void)
 {
     uint16_t led_num = argb_get_led_total_len();
     uint8_t br = g_argb_br_fade_config.current_br;
+
+    uint16_t br255 = (br * 255) / 100;
     for (uint16_t i = 0; i < led_num; i++) {
 
-        argb_color_type_st color = g_argb_color_payload[i];
-
-        color.R = (color.R * br) / 100;
-        color.G = (color.G * br) / 100;
-        color.B = (color.B * br) / 100;
+        argb_color_type_st color = argb_color_payload_buf[i];
 
         argb_gamma_handle(&color);
+
+        color.R = (color.R * br255 + 128) >> 8;
+        color.G = (color.G * br255 + 128) >> 8;
+        color.B = (color.B * br255 + 128) >> 8;
+
         argb_led_short_handle(&color, &argb_color_payload_tx_buf[i]);
     }
     argb_drv_sendata((const uint8_t *)argb_color_payload_tx_buf, led_num * sizeof(argb_color_type_st));
 }
 
+/**
+ * @brief 所有灯珠设置相同颜色
+ * @param color 要设置的颜色
+ */
 void argb_set_all_color(argb_color_type_st color)
 {
     uint16_t led_num = argb_get_led_total_len();
 
     for (size_t i = 0; i < led_num; i++) {
-        g_argb_color_payload[i] = color;
+        argb_color_payload_buf[i] = color;
     }
 }
