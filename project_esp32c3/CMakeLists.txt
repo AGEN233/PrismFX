@@ -7,6 +7,7 @@ set(EXTRA_COMPONENT_DIRS
      $ENV{IDF_PATH}/../modules/utils
      $ENV{IDF_PATH}/../modules/argb_driver
      $ENV{IDF_PATH}/../modules/ble_iot
+     $ENV{IDF_PATH}/../modules/button
      
 )
 

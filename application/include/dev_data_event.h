@@ -3,4 +3,5 @@
 
 
 void prismFX_data_register(void);
+void prismFX_state_report(void);
 #endif

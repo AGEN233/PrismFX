@@ -1,7 +1,7 @@
 #include "sdkconfig.h"
 #ifdef CONFIG_ENABLE_LED_PILOT_LAMP
 
-#include "led_pilot.h"
+#include "hardware/led_pilot.h"
 #include "dev_public.h"
 #include "driver/ledc.h"
 #include "freertos/FreeRTOS.h"

@@ -21,11 +21,13 @@
 #include "argb_colorful_if.h"
 
 #include "static_mode/static_mode.h"
-#include "led_pilot.h"
+#include "hardware/led_pilot.h"
 
 #include "dev_data_event.h"
 #include "dev_register.h"
 #include "dev_utils.h"
+
+#include "button.h"
 
 
 void prismFX_system_init(void);

@@ -38,8 +38,8 @@ void prismFX_system_init(void)
     prismFX_ble_iot_init();
     prismFX_register_init();
 
-
     // led_pilot_init();
 
     prismFX_light_init();
+    button_init(GPIO_NUM_10, 900, 180);
 }

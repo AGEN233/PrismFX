@@ -7,7 +7,6 @@ set(srcs
     "src/argb_core.c"
     "src/argb_frame.c"
     "src/argb_colorful_if.c"
-    "src/led_pilot.c"
     "src/dev_data_event.c"
 
     "src/static_mode/static_mode.c"
@@ -27,6 +26,7 @@ set(requires
     "utils"
     "argb_driver"
     "ble_iot"
+    "button"
 )
 
 idf_component_register(
